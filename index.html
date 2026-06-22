@@ -99,29 +99,7 @@
   #translationBox{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:var(--radius);padding:12px 16px;font-size:.9rem;color:var(--text2);display:none;line-height:1.6;}
   #translationBox strong{color:var(--text);}
 
-  /* Stats */
-  .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;}
-  .stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden;}
-  .stat-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 var(--radius) var(--radius);}
-  .s-correct::after{background:var(--green);}
-  .s-wrong::after{background:var(--red);}
-  .s-skip::after{background:var(--yellow);}
-  .s-acc::after{background:linear-gradient(90deg,var(--accent),var(--accent2));}
-  .stat-icon{font-size:1.4rem;line-height:1;}
-  .stat-info{flex:1;}
-  .stat-val{font-size:1.5rem;font-weight:800;line-height:1;}
-  .s-correct .stat-val{color:var(--green);}
-  .s-wrong .stat-val{color:var(--red);}
-  .s-skip .stat-val{color:var(--yellow);}
-  .s-acc .stat-val{color:var(--accent);}
-  .stat-lbl{font-size:.68rem;color:var(--text2);margin-top:2px;}
-  .stat-streak{font-size:.68rem;color:var(--text2);margin-top:1px;}
-  /* Mini bar chart */
-  .mini-bars{display:flex;align-items:flex-end;gap:2px;height:24px;margin-top:4px;}
-  .mini-bar{width:5px;border-radius:2px 2px 0 0;min-height:2px;transition:height .3s;}
-  .mini-bar.ok{background:var(--green);}
-  .mini-bar.bad{background:var(--red);}
-  .mini-bar.skip{background:var(--yellow);}
+  
 
   /* Controls */
   .controls-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
@@ -271,40 +249,6 @@
   <!-- Subtitle display -->
   <div id="subtitleDisplay"></div>
 
-  <!-- Stats -->
-  <div class="stats-row" id="statsRow" style="display:none">
-    <div class="stat-box s-correct">
-      <div class="stat-icon">✅</div>
-      <div class="stat-info">
-        <div class="stat-val" id="statCorrect">0</div>
-        <div class="stat-lbl">Đúng</div>
-        <div class="stat-streak" id="streakDisplay">Streak: 0 🔥</div>
-      </div>
-    </div>
-    <div class="stat-box s-wrong">
-      <div class="stat-icon">❌</div>
-      <div class="stat-info">
-        <div class="stat-val" id="statWrong">0</div>
-        <div class="stat-lbl">Sai</div>
-      </div>
-    </div>
-    <div class="stat-box s-skip">
-      <div class="stat-icon">⏭</div>
-      <div class="stat-info">
-        <div class="stat-val" id="statSkipped">0</div>
-        <div class="stat-lbl">Bỏ qua</div>
-      </div>
-    </div>
-    <div class="stat-box s-acc">
-      <div class="stat-icon">🎯</div>
-      <div class="stat-info">
-        <div class="stat-val" id="statAcc">–</div>
-        <div class="stat-lbl">Accuracy</div>
-        <div class="mini-bars" id="miniChart"></div>
-      </div>
-    </div>
-  </div>
-
   <!-- Input -->
   <div id="inputArea">
     <div id="interimText"></div>
@@ -362,9 +306,6 @@ const progressBar=$('progressBar'), progressText=$('progressText'), accuracyText
 const subtitleDisplay=$('subtitleDisplay'), inputArea=$('inputArea');
 const answerInput=$('answerInput'), micBtn=$('micBtn'), btnCheck=$('btnCheck');
 const feedback=$('feedback'), translationBox=$('translationBox'), statsRow=$('statsRow');
-const statCorrect=$('statCorrect'), statWrong=$('statWrong'), statSkipped=$('statSkipped');
-const statAcc=$('statAcc'), interimText=$('interimText'), continuousBanner=$('continuousBanner');
-const streakDisplay=$('streakDisplay'), miniChart=$('miniChart');
 const micModeBadge=$('micModeBadge');
 const ytWrap=$('ytWrap'), sourceLocal=$('sourceLocal'), sourceYoutube=$('sourceYoutube');
 const srcBtnLocal=$('srcBtnLocal'), srcBtnYoutube=$('srcBtnYoutube');
@@ -849,7 +790,7 @@ btnReset.addEventListener('click',()=>{ if(confirm('Reset tiến độ?')) reset
 function startSession() {
   isStarted=true; isContinuous=false;
   btnStart.textContent='⏸ Pause';
-  progressWrap.style.display='block'; statsRow.style.display='grid';
+  progressWrap.style.display='block'; 
   btnSkip.style.display='inline-block';
   loadSentence(currentIdx<0?0:currentIdx);
 }
@@ -858,7 +799,7 @@ function startContinuous() {
   isContinuous=true; isStarted=true;
   continuousBanner.style.display='block';
   btnContinuous.textContent='⏹ Stop'; btnContinuous.classList.add('danger');
-  progressWrap.style.display='block'; statsRow.style.display='grid';
+  progressWrap.style.display='block'; 
   if(currentIdx<0) currentIdx=0;
   seekAndPlay(subtitles[currentIdx].start);
   statusBadge.textContent='Đang phát liên tục';
@@ -882,7 +823,7 @@ function resetAll() {
   feedback.textContent=''; answerInput.value='';
   progressBar.style.width='0%'; progressText.textContent='0 / 0';
   accuracyText.textContent='Accuracy: –';
-  updateStats(); updateMiniChart();
+   
   btnStart.textContent='▶ Bắt đầu'; statusBadge.textContent='Sẵn sàng';
   continuousBanner.style.display='none';
   btnContinuous.textContent='🎧 Nghe liên tục'; btnContinuous.classList.remove('danger');
@@ -897,7 +838,7 @@ function skipSentence() {
   streak=0;
   recentResults.push('skip');
   if(recentResults.length>12) recentResults.shift();
-  updateStats(); updateMiniChart();
+   
   saveProgress();
   translationBox.style.display='none';
   loadSentence(currentIdx+1);
@@ -1038,7 +979,7 @@ function checkAnswer() {
     feedback.textContent=`✅ Chính xác!${streakMsg} Nhấn Enter để tiếp tục.`;
     feedback.className='ok';
     answerInput.classList.add('correct-anim');
-    updateStats(); updateMiniChart(); saveProgress();
+      saveProgress();
     showTranslation(sub.text);
   } else {
     stats.wrong++; streak=0;
@@ -1047,7 +988,7 @@ function checkAnswer() {
     feedback.className='fail';
     answerInput.classList.add('wrong-anim');
     setTimeout(()=>answerInput.classList.remove('wrong-anim'),500);
-    updateStats(); updateMiniChart();
+     
     setTimeout(()=>seekAndPlay(subtitles[currentIdx].start),400);
   }
 }
@@ -1110,24 +1051,9 @@ function updateProgress() {
   accuracyText.textContent='Accuracy: '+(at>0?Math.round(stats.correct/at*100)+'%':'–');
 }
 
-function updateStats() {
-  statCorrect.textContent=stats.correct;
-  statWrong.textContent=stats.wrong;
-  statSkipped.textContent=stats.skipped;
-  const total=stats.correct+stats.wrong;
-  statAcc.textContent=total>0?Math.round(stats.correct/total*100)+'%':'–';
-  const emoji=streak>=5?'🔥':streak>=3?'⚡':'✨';
-  streakDisplay.textContent=`Streak: ${streak} ${emoji} | Best: ${maxStreak}`;
-}
 
-function updateMiniChart() {
-  const bars=recentResults.slice(-12);
-  miniChart.innerHTML=bars.map(r=>{
-    const h=r==='ok'?20:r==='bad'?10:5;
-    const cls=r==='ok'?'ok':r==='bad'?'bad':'skip';
-    return `<div class="mini-bar ${cls}" style="height:${h}px"></div>`;
-  }).join('');
-}
+
+
 
 // ══════════════════════════════════════════════════════════
 //  LOCALSTORAGE
@@ -1158,7 +1084,7 @@ function tryLoadProgress() {
         stats=d.stats||{correct:0,wrong:0,skipped:0};
         streak=d.streak||0; maxStreak=d.maxStreak||0;
         recentResults=d.recentResults||[];
-        updateStats(); updateMiniChart();
+         
       }
     }
   } catch{}
@@ -1180,7 +1106,7 @@ function tryLoadLessonProgress(id) {
 
 function showFinished() {
   subtitleDisplay.style.display='block';
-  subtitleDisplay.innerHTML=`<span style="color:var(--green);font-size:1.2rem">🎉 Hoàn thành! ${subtitles.length} câu · Accuracy: ${statAcc.textContent}</span>`;
+  subtitleDisplay.innerHTML=`<span style="color:var(--green);font-size:1.2rem">🎉 Hoàn thành! ${subtitles.length} câu</span>`;
   inputArea.style.display='none'; feedback.textContent='';
   statusBadge.textContent='Xong!'; updateProgress();
   if(activeLessonId) localStorage.removeItem(STORAGE_KEY+'_'+activeLessonId);
@@ -1300,7 +1226,7 @@ btnCheck.addEventListener('click',checkAnswer);
 // ══════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════
-updateStats(); updateMiniChart(); renderLibrary();
+  renderLibrary();
 </script>
 </body>
 </html>
